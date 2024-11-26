@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">interactice_segment</string>
+    <string name="upload">上传</string>
+    <string name="interactive">交互</string>
+    <string name="download">保存</string>
+    <string name="img_description">此处展示上传的图片</string>
+    <string name="top_line">连接笔</string>
+    <string name="top_rollback">撤回一步</string>
+    <string name="top_exit">保存并退出</string>
+    <string name="top_interested">兴趣点</string>
+    <string name="top_uninterested">非兴趣点</string>
+    <string name="top_clear">清空所有操作</string>
+    <string name="top_moveImg">移动和缩放</string>
+    <string name="top_pen">画笔</string>
+    <string name="img_save">此处展示保存的绘制结果</string>
+</resources>
