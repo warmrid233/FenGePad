@@ -1,19 +1,22 @@
-package com.example.interactice_segment.bean;
+package com.example.interactice_segment.view;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.example.interactice_segment.R;
+import com.example.interactice_segment.presenter.IInteractivePresenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +31,9 @@ public class DrawingView extends View
     private Bitmap bitmap;
     private Canvas canvas;
     private int method;
+
+    private ZoomableImageView imageView;
+
 
     // 使用栈来记录每次绘制的路径（撤销）
     private Stack<Bitmap> undoStack = new Stack<>();
@@ -56,11 +62,12 @@ public class DrawingView extends View
     private void init()
     {
         method = 1;
+        imageView = findViewById(R.id.img_show);
 
         paint = new Paint();
         paint.setColor(Color.RED); // 画笔颜色
         paint.setAntiAlias(true);
-        paint.setStrokeWidth(5); // 设置画笔宽度
+        paint.setStrokeWidth(3); // 设置画笔宽度
         paint.setStyle(Paint.Style.STROKE); // 设置为描边模式
 
         paint.setAntiAlias(true);
@@ -70,22 +77,6 @@ public class DrawingView extends View
         points = new ArrayList<>();  // 初始化点的列表
     }
 
-    public void setMethod(int method)
-    {
-        this.method = method;
-    }
-
-    public void setColor(int color)
-    {
-        if(color == 1)
-        {
-            paint.setColor(Color.RED);
-        }
-        else if (color == 2)
-        {
-            paint.setColor((Color.BLUE));
-        }
-    }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh)
@@ -109,6 +100,23 @@ public class DrawingView extends View
         }
     }
 
+    public void setMethod(int method)
+    {
+        this.method = method;
+    }
+
+    public void setColor(int color)
+    {
+        if(color == 1)
+        {
+            paint.setColor(Color.RED);
+        }
+        else if (color == 2)
+        {
+            paint.setColor((Color.BLUE));
+        }
+    }
+
     boolean newLine = false;
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -121,12 +129,12 @@ public class DrawingView extends View
             case MotionEvent.ACTION_DOWN:
                 if (method == 1)
                 {
-                    canvas.drawCircle(x, y, 5, paint);
+                    canvas.drawCircle(x, y, 3, paint);
                     saveStateForUndo();
                 }
                 else if (method == 2)
                 {
-                    canvas.drawCircle(x, y, 5, paint);
+                    canvas.drawCircle(x, y, 3, paint);
                     // 将点击的坐标添加到列表中
                     points.add(new float[]{x, y});
                 } else if (method == 3)

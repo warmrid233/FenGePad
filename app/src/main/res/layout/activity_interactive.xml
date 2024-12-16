@@ -111,17 +111,18 @@
         app:layout_constraintTop_toBottomOf="@+id/top_linearLayout">
 
 
-        <com.example.interactice_segment.bean.DrawingView
+        <com.example.interactice_segment.view.DrawingView
             android:id="@+id/drawing_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <com.example.interactice_segment.bean.ZoomableImageView
+        <com.example.interactice_segment.view.ZoomableImageView
             android:id="@+id/img_show"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="@string/img_description"
-            android:src="@drawable/baseline_upload_24" />
+            android:src="@drawable/baseline_upload_24"
+            android:background="@color/cardview_dark_background"/>
 
     </FrameLayout>
 

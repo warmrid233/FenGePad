@@ -9,6 +9,8 @@ import android.provider.MediaStore;
 
 import androidx.annotation.NonNull;
 
+import com.example.interactice_segment.model.tool.UploadBitmapTask;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -57,40 +59,8 @@ public class ShowModel implements IShowModel
     }
 
     @Override
-    public int uploadImage(Bitmap bitmap)
+    public void uploadImage(Bitmap bitmap)
     {
-        final int[] result = new int[1];
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] imageBytes = baos.toByteArray();
-
-        OkHttpClient client = new OkHttpClient();
-        RequestBody requestBody = new MultipartBody.Builder()
-                .setType(MultipartBody.FORM)
-                .addFormDataPart("image", "image.jpg",
-                        RequestBody.create(MediaType.parse("image/*"), imageBytes))
-                .build();
-
-        Request request = new Request.Builder()
-                .url("http://localhost:90/")
-                .post(requestBody)
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                result[0] = 0;
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    result[0] = 1;
-                } else {
-                    result[0] = 0;
-                }
-            }
-        });
-        return result[0];
+        new UploadBitmapTask().execute(bitmap);
     }
 }

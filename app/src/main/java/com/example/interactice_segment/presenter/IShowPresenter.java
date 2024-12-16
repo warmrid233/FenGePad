@@ -5,6 +5,6 @@ import android.graphics.Bitmap;
 
 public interface IShowPresenter extends IBasePresenter
 {
-    void uploadImg(Activity context, Bitmap bitmap);
+    void uploadImg(Bitmap bitmap);
     void saveBitmap(Bitmap bitmap, String title);
 }

@@ -1,18 +1,11 @@
 package com.example.interactice_segment;
 
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-
-import android.Manifest;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
-import com.example.interactice_segment.presenter.IBasePresenter;
 import com.example.interactice_segment.view.BaseView;
 
 public abstract class BaseActivity extends AppCompatActivity implements BaseView

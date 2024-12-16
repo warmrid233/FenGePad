@@ -19,16 +19,9 @@ public class ShowPresenter extends BasePresenter implements IShowPresenter
     }
 
     @Override
-    public void uploadImg(Activity context, Bitmap bitmap)
+    public void uploadImg(Bitmap bitmap)
     {
-        int result = model.uploadImage(bitmap);
-        if(result == 0)
-        {
-            ((ShowActivity)view).runOnUiThread(() -> view.showMessage("上传失败"));
-        }else
-        {
-            ((ShowActivity)view).runOnUiThread(() -> view.showMessage("上传成功"));
-        }
+        model.uploadImage(bitmap);
     }
 
     @Override

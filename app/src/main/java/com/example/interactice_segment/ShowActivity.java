@@ -19,6 +19,8 @@ import com.example.interactice_segment.presenter.ShowPresenter;
 import com.example.interactice_segment.view.ShowView;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class ShowActivity extends BaseActivity implements ShowView
@@ -50,11 +52,15 @@ public class ShowActivity extends BaseActivity implements ShowView
         presenter = new ShowPresenter(this);
 
         Intent intent = this.getIntent();
-        byte[] byteTemp = intent.getByteArrayExtra("bp");
-        if (byteTemp != null)
+        String imagePath = intent.getStringExtra("imagePath");
+        if (imagePath != null)
         {
-            bitmap = BitmapFactory.decodeByteArray(byteTemp, 0, byteTemp.length);
-            imageView.setImageBitmap(bitmap);
+            File imgFile = new  File(imagePath);
+            if (imgFile.exists())
+            {
+                bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                imageView.setImageBitmap(bitmap);
+            }
         }
 
         upload_btn.setOnClickListener(new View.OnClickListener() {
@@ -73,20 +79,17 @@ public class ShowActivity extends BaseActivity implements ShowView
             {
                 if(bitmap != null)
                 {
+                    presenter.uploadImg(bitmap);
+                    File file = new File(getCacheDir(), "temp_image.jpg");
+                    try (FileOutputStream fos = new FileOutputStream(file)) {
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
                     Intent intent = new Intent();
                     intent.setClass(ShowActivity.this, InteractiveActivity.class);
-                    ByteArrayOutputStream bs = new ByteArrayOutputStream();
-                    if(bitmap.getByteCount() <= 5 * 1024 * 1024)
-                    {
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bs);
-                    }
-                    else
-                    {
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, bs);
-                        showMessage("图片过大，已压缩质量");
-                    }
-                    byte[] bitmapByte = bs.toByteArray();
-                    intent.putExtra("bp", bitmapByte);
+                    intent.putExtra("imagePath", file.getAbsolutePath());
 
                     startActivity(intent);
                     finish();
@@ -122,7 +125,6 @@ public class ShowActivity extends BaseActivity implements ShowView
             {
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
                 imageView.setImageBitmap(bitmap);
-                //presenter.uploadImg(this, bitmap);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
