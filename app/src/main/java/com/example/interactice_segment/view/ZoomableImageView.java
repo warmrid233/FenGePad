@@ -20,9 +20,6 @@ public class ZoomableImageView extends androidx.appcompat.widget.AppCompatImageV
     private float scaleFactor = 1.f;
     private float[] lastEvent = new float[2]; // 用来记录手指的最后位置
 
-    private float offsetX = 0.f;  // 当前平移偏移量
-    private float offsetY = 0.f;  // 当前平移偏移量
-
     private DrawingView drawingView;
 
     public ZoomableImageView(Context context) {
@@ -99,8 +96,6 @@ public class ZoomableImageView extends androidx.appcompat.widget.AppCompatImageV
             matrix.postTranslate(dx, dy);
 
             // 更新偏移量
-            offsetX += dx;
-            offsetY += dy;
 
             // 记录当前触摸点
             lastEvent[0] = e2.getX();
@@ -111,12 +106,27 @@ public class ZoomableImageView extends androidx.appcompat.widget.AppCompatImageV
         }
     }
 
-    // 计算原始图像的坐标
     public PointF getOriginalImageCoordinates(float clickX, float clickY) {
-        float originalX = (clickX - offsetX) / scaleFactor;
-        float originalY = (clickY - offsetY) / scaleFactor;
-        return new PointF(originalX, originalY);
+        // 获取当前矩阵的反矩阵
+        Matrix inverseMatrix = new Matrix();
+        matrix.invert(inverseMatrix);  // 获取当前变换的反向矩阵
+
+        // 创建一个 PointF 对象来保存原始图像的坐标
+        float[] coords = new float[] {clickX, clickY};
+
+        // 将点击的屏幕坐标通过反矩阵转换为原始图像坐标
+        inverseMatrix.mapPoints(coords);
+
+        // 返回转换后的原始坐标
+        return new PointF(coords[0], coords[1]);
     }
+
+//    // 计算原始图像的坐标
+//    public PointF getOriginalImageCoordinates(float clickX, float clickY) {
+//        float originalX = (clickX - offsetX) / scaleFactor;
+//        float originalY = (clickY - offsetY) / scaleFactor;
+//        return new PointF(originalX, originalY);
+//    }
 
     // 调整 DrawingView 的大小，保持与 Bitmap 的缩放同步
     private void adjustDrawingViewSize() {
@@ -140,8 +150,6 @@ public class ZoomableImageView extends androidx.appcompat.widget.AppCompatImageV
     public void reset() {
         // 重置缩放因子和矩阵
         scaleFactor = 1.f;
-        offsetX = 0.f;
-        offsetY = 0.f;
         matrix.reset(); // 清除所有变换
         adjustDrawingViewSize();  // 重置 DrawingView 大小
 

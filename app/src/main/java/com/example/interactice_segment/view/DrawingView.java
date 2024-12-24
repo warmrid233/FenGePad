@@ -129,12 +129,12 @@ public class DrawingView extends View
             case MotionEvent.ACTION_DOWN:
                 if (method == 1)
                 {
-                    canvas.drawCircle(x, y, 3, paint);
+                    canvas.drawCircle(x, y, 2, paint);
                     saveStateForUndo();
                 }
                 else if (method == 2)
                 {
-                    canvas.drawCircle(x, y, 3, paint);
+                    canvas.drawCircle(x, y, 2, paint);
                     // 将点击的坐标添加到列表中
                     points.add(new float[]{x, y});
                 } else if (method == 3)

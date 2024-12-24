@@ -13,4 +13,5 @@
     <string name="top_moveImg">移动和缩放</string>
     <string name="top_pen">画笔</string>
     <string name="img_save">此处展示保存的绘制结果</string>
+    <string name="top_finish">完成这个识别</string>
 </resources>

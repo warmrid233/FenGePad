@@ -88,6 +88,18 @@
             app:strokeWidth="0.5dp" />
 
         <Button
+            android:id="@+id/top_finish"
+            style="@style/Widget.Material3.ExtendedFloatingActionButton.Primary"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/top_finish"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            app:icon="@drawable/baseline_check_24"
+            app:strokeColor="@color/black"
+            app:strokeWidth="0.5dp" />
+
+        <Button
             android:id="@+id/top_exit"
             style="@style/Widget.Material3.ExtendedFloatingActionButton.Primary"
             android:layout_width="wrap_content"

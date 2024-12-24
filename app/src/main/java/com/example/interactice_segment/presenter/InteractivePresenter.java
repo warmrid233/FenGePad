@@ -28,5 +28,16 @@ public class InteractivePresenter extends BasePresenter implements IInteractiveP
         model.getImage(callback);
     }
 
+    @Override
+    public void finish()
+    {
+        model.finish();
+    }
+
+    @Override
+    public void undo() {
+        model.undo();
+    }
+
 
 }

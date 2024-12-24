@@ -35,7 +35,7 @@ public class GetImageTask extends AsyncTask<Void, Void, Bitmap>
             bitmap = BitmapFactory.decodeStream(inputStream);
             inputStream.close();
         } catch (Exception e) {
-            Log.e("DownloadImageTask", "Error downloading image: " + e.getMessage());
+            Log.e("GetImageTask", "Error downloading image: " + e.getMessage());
         }
         return bitmap;
     }

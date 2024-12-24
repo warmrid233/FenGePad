@@ -34,6 +34,7 @@ public class InteractiveActivity extends BaseActivity implements GetImageCallbac
     private int method = 0; //0 - 图片缩放、移动， 1 - 点击， 2 - 连线， 3 - 画笔
     private int is_positive = 1;
     private int resetImg = 1;
+
     @Override
     protected int getLayoutId()
     {
@@ -50,6 +51,7 @@ public class InteractiveActivity extends BaseActivity implements GetImageCallbac
         Button btn_lines = findViewById(R.id.top_line);
         Button btn_pen = findViewById(R.id.top_pen);
         Button btn_rollback = findViewById(R.id.top_rollback);
+        Button btn_finish = findViewById(R.id.top_finish);
         Button btn_exit = findViewById(R.id.top_exit);
 
         frameLayout = findViewById(R.id.frame);
@@ -150,7 +152,8 @@ public class InteractiveActivity extends BaseActivity implements GetImageCallbac
                 frameLayout.bringChildToFront(drawingView);
                 frameLayout.invalidate();
                 //画笔的实现
-                drawingView.setMethod(2);
+                method = 2;
+                drawingView.setMethod(method);
                 drawingView.setColor(RED_CONST);
             }
         });
@@ -163,7 +166,8 @@ public class InteractiveActivity extends BaseActivity implements GetImageCallbac
                 frameLayout.bringChildToFront(drawingView);
                 frameLayout.invalidate();
                 //画笔的实现
-                drawingView.setMethod(3);
+                method = 3;
+                drawingView.setMethod(method);
                 drawingView.setColor(RED_CONST);
             }
         });
@@ -180,6 +184,24 @@ public class InteractiveActivity extends BaseActivity implements GetImageCallbac
                 //撤回上一步的实现
                 drawingView.setMethod(0);
                 drawingView.undo();
+                presenter.undo();
+                presenter.getImage(InteractiveActivity.this);
+            }
+        });
+
+        btn_finish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                frameLayout.bringChildToFront(drawingView);
+                frameLayout.invalidate();
+                
+                resetImg = 0;
+                method = 0;
+                drawingView.setMethod(method);
+
+                drawingView.clear();
+                presenter.finish();
+                presenter.getImage(InteractiveActivity.this);
             }
         });
 
@@ -242,7 +264,9 @@ public class InteractiveActivity extends BaseActivity implements GetImageCallbac
     }
 
     @Override
-    public void onImageGot(Bitmap bitmap) {
+    public void onImageGot(Bitmap bitmap)
+    {
+        this.bitmap = bitmap;
         imageView.setImageBitmap(bitmap);
     }
 

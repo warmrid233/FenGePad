@@ -10,4 +10,8 @@ public interface IInteractiveModel
 
 
     void getImage(GetImageCallback callback);
+
+    void finish();
+
+    void undo();
 }
