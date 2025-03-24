@@ -14,6 +14,7 @@ import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 
+import com.example.interactice_segment.model.tool.UploadImgCallback;
 import com.example.interactice_segment.presenter.IShowPresenter;
 import com.example.interactice_segment.presenter.ShowPresenter;
 import com.example.interactice_segment.view.ShowView;
@@ -23,13 +24,16 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class ShowActivity extends BaseActivity implements ShowView
+public class ShowActivity extends BaseActivity implements ShowView, UploadImgCallback
 {
+    private String ip_port = null;
     private final int REQUEST_GALLERY = 2;
 
     private Bitmap bitmap;
     private ImageView imageView;
     private IShowPresenter presenter;
+
+    private boolean isUploaded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,9 +53,9 @@ public class ShowActivity extends BaseActivity implements ShowView
         Button interactive_btn = findViewById(R.id.btn_interactive);
         imageView = findViewById(R.id.img_show);
 
-        presenter = new ShowPresenter(this);
-
         Intent intent = this.getIntent();
+        ip_port = intent.getStringExtra("IpAndPort");
+        presenter = new ShowPresenter(this, ip_port);
         String imagePath = intent.getStringExtra("imagePath");
         if (imagePath != null)
         {
@@ -60,6 +64,7 @@ public class ShowActivity extends BaseActivity implements ShowView
             {
                 bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                 imageView.setImageBitmap(bitmap);
+                presenter.uploadImg(bitmap, ShowActivity.this);
             }
         }
 
@@ -79,20 +84,24 @@ public class ShowActivity extends BaseActivity implements ShowView
             {
                 if(bitmap != null)
                 {
-                    presenter.uploadImg(bitmap);
-                    File file = new File(getCacheDir(), "temp_image.jpg");
-                    try (FileOutputStream fos = new FileOutputStream(file)) {
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    if(isUploaded)
+                    {
+                        File file = new File(getCacheDir(), "temp_image.jpg");
+                        try (FileOutputStream fos = new FileOutputStream(file)) {
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        Intent intent = new Intent();
+                        intent.setClass(ShowActivity.this, InteractiveActivity.class);
+                        intent.putExtra("imagePath", file.getAbsolutePath());
+                        intent.putExtra("IpAndPort", ip_port);
+
+                        startActivity(intent);
+                        finish();
                     }
-
-                    Intent intent = new Intent();
-                    intent.setClass(ShowActivity.this, InteractiveActivity.class);
-                    intent.putExtra("imagePath", file.getAbsolutePath());
-
-                    startActivity(intent);
-                    finish();
+                    else showMessage("图片还未上传到模型，请稍后再次尝试.");
                 }
                 else
                 {
@@ -125,6 +134,8 @@ public class ShowActivity extends BaseActivity implements ShowView
             {
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
                 imageView.setImageBitmap(bitmap);
+
+                presenter.uploadImg(bitmap, ShowActivity.this);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -134,7 +145,6 @@ public class ShowActivity extends BaseActivity implements ShowView
     @Override
     public Bitmap getBitmapToSave()
     {
-        // Return the bitmap you want to save. In this demo, we assume it's loaded into imageView.
         Drawable drawable = imageView.getDrawable();
         if (drawable instanceof BitmapDrawable) {
             return ((BitmapDrawable) drawable).getBitmap();
@@ -150,5 +160,20 @@ public class ShowActivity extends BaseActivity implements ShowView
         {
             presenter.detachView();
         }
+    }
+
+    @Override
+    public void onImageUploaded(String result) {
+        if(!result.startsWith("Error"))
+        {
+            isUploaded = true;
+            showMessage("图片已成功上传至模型，可以开始交互.");
+        }
+    }
+
+    @Override
+    public void onUploadedFailed()
+    {
+        showMessage("图片上传失败");
     }
 }

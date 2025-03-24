@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
@@ -24,6 +25,7 @@ import java.util.Stack;
 
 public class DrawingView extends View
 {
+    private Matrix matrix = new Matrix();
     private Paint paint;
     private List<float[]> points;
     private int points_num = 0;
@@ -31,8 +33,6 @@ public class DrawingView extends View
     private Bitmap bitmap;
     private Canvas canvas;
     private int method;
-
-    private ZoomableImageView imageView;
 
 
     // 使用栈来记录每次绘制的路径（撤销）
@@ -62,7 +62,7 @@ public class DrawingView extends View
     private void init()
     {
         method = 1;
-        imageView = findViewById(R.id.img_show);
+        ZoomableImageView imageView = findViewById(R.id.img_show);
 
         paint = new Paint();
         paint.setColor(Color.RED); // 画笔颜色
@@ -93,8 +93,11 @@ public class DrawingView extends View
     {
         super.onDraw(canvas);
         // 绘制背景图
-        canvas.drawBitmap(bitmap, 0, 0, null);
-
+//        canvas.drawBitmap(bitmap, 0, 0, null);
+        if(bitmap != null)
+        {
+            canvas.drawBitmap(bitmap, matrix, null);
+        }
         if (method == 2) {
             drawAllLines();
         }
@@ -242,6 +245,28 @@ public class DrawingView extends View
             // 刷新视图，更新界面
             invalidate();
         }
+    }
+
+    public Bitmap getBitmap()
+    {
+        return this.bitmap;
+    }
+
+    public void setBitmap(Bitmap bitmap, Matrix matrix)
+    {
+        // 获取 DrawingView 的尺寸
+        int viewWidth = getWidth();
+        int viewHeight = getHeight();
+
+        // 如果 Bitmap 的尺寸与 DrawingView 的尺寸不匹配，缩放 Bitmap
+        if (bitmap.getWidth() != viewWidth || bitmap.getHeight() != viewHeight) {
+            this.bitmap = Bitmap.createScaledBitmap(bitmap, viewWidth, viewHeight, true);
+        } else {
+            this.bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+        }
+        this.matrix = new Matrix(matrix);
+        this.canvas = new Canvas(this.bitmap);
+        invalidate();
     }
 
     public void clear()

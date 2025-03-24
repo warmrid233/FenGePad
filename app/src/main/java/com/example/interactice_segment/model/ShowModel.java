@@ -10,6 +10,7 @@ import android.provider.MediaStore;
 import androidx.annotation.NonNull;
 
 import com.example.interactice_segment.model.tool.UploadBitmapTask;
+import com.example.interactice_segment.model.tool.UploadImgCallback;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -26,6 +27,12 @@ import okhttp3.Response;
 
 public class ShowModel implements IShowModel
 {
+    private String ip_port = null;
+
+    public ShowModel(String ip_port)
+    {
+        this.ip_port = ip_port;
+    }
 
     @Override
     public void saveBitmapToGallery(Context context, Bitmap bitmap, String title)
@@ -59,8 +66,10 @@ public class ShowModel implements IShowModel
     }
 
     @Override
-    public void uploadImage(Bitmap bitmap)
+    public void uploadImage(Bitmap bitmap, UploadImgCallback callback)
     {
-        new UploadBitmapTask().execute(bitmap);
+        UploadBitmapTask ubt = new UploadBitmapTask(callback);
+        ubt.setIp_port(ip_port);
+        ubt.execute(bitmap);
     }
 }

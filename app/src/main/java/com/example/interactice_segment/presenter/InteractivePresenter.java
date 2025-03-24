@@ -9,12 +9,14 @@ import com.example.interactice_segment.view.BaseView;
 
 public class InteractivePresenter extends BasePresenter implements IInteractivePresenter
 {
+    private String ip_port = null;
     private IInteractiveModel model;
 
-    public InteractivePresenter(BaseView view)
+    public InteractivePresenter(BaseView view, String ip_port)
     {
         super(view);
-        model = new InteractiveModel();
+        model = new InteractiveModel(ip_port);
+        this.ip_port = ip_port;
     }
 
     @Override

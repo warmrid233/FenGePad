@@ -2,8 +2,12 @@ package com.example.interactice_segment.view;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.PointF;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -71,7 +75,7 @@ public class ZoomableImageView extends androidx.appcompat.widget.AppCompatImageV
             matrix.setScale(scaleFactor, scaleFactor); // 应用缩放变换
 
             // 处理缩放时同时更新 DrawingView 的大小
-            adjustDrawingViewSize();
+            //adjustDrawingViewSize();
             return true;
         }
     }
@@ -121,13 +125,6 @@ public class ZoomableImageView extends androidx.appcompat.widget.AppCompatImageV
         return new PointF(coords[0], coords[1]);
     }
 
-//    // 计算原始图像的坐标
-//    public PointF getOriginalImageCoordinates(float clickX, float clickY) {
-//        float originalX = (clickX - offsetX) / scaleFactor;
-//        float originalY = (clickY - offsetY) / scaleFactor;
-//        return new PointF(originalX, originalY);
-//    }
-
     // 调整 DrawingView 的大小，保持与 Bitmap 的缩放同步
     private void adjustDrawingViewSize() {
         int bitmapWidth = getDrawable().getIntrinsicWidth();
@@ -146,12 +143,42 @@ public class ZoomableImageView extends androidx.appcompat.widget.AppCompatImageV
         }
     }
 
+    public Matrix getCurrentMatrix()
+    {
+        return new Matrix(matrix);
+    }
+
+    public Bitmap getCurrentBitmap()
+    {
+        Drawable drawable = getDrawable();
+        if (drawable == null) return null;
+
+        // 获取 Drawable 的原始 Bitmap
+//        Bitmap originalBitmap = ((BitmapDrawable) drawable).getBitmap();
+//        // 获取当前矩阵的反矩阵
+//        Matrix inverseMatrix = new Matrix();
+//        matrix.invert(inverseMatrix);  // 获取当前变换的反向矩阵
+//
+//        // 获取当前 View 的宽高
+//        int viewWidth = getWidth();
+//        int viewHeight = getHeight();
+//        // 创建一个新的 Bitmap，用于保存当前显示的内容
+//        Bitmap displayedBitmap = Bitmap.createBitmap(viewWidth, viewHeight, Bitmap.Config.ARGB_8888);
+//        Canvas canvas = new Canvas(displayedBitmap);
+//
+//        // 将原始 Bitmap 绘制到新的 Bitmap 上，应用当前的 Matrix 变换
+//        canvas.drawBitmap(originalBitmap, matrix, null);
+
+        return ((BitmapDrawable) drawable).getBitmap();
+    }
+
+
     // 添加一个方法来重置图片到初始状态
     public void reset() {
         // 重置缩放因子和矩阵
         scaleFactor = 1.f;
         matrix.reset(); // 清除所有变换
-        adjustDrawingViewSize();  // 重置 DrawingView 大小
+        //adjustDrawingViewSize();  // 重置 DrawingView 大小
 
         // 重新应用缩放变换
         matrix.setScale(scaleFactor, scaleFactor);
@@ -159,5 +186,11 @@ public class ZoomableImageView extends androidx.appcompat.widget.AppCompatImageV
         // 重新绘制视图
         invalidate();
 
+    }
+
+    public void setBitmap(Bitmap bitmap)
+    {
+        setImageBitmap(bitmap);
+        this.reset();
     }
 }

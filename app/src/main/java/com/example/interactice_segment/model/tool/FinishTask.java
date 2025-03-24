@@ -7,14 +7,16 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class FinishTask extends AsyncTask<Void, Void, String>
+public class FinishTask extends AsyncTask<Void, Void, String> implements BaseTask
 {
+    private String ip_port = null;
     @Override
     protected String doInBackground(Void... voids)
     {
         try {
+            String url_s = "http://" + this.ip_port + "/finish";
             // 创建连接
-            URL url = new URL("http://10.129.234.121:5000/finish");
+            URL url = new URL(url_s);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setDoInput(true);
@@ -43,4 +45,9 @@ public class FinishTask extends AsyncTask<Void, Void, String>
         Log.d("FinishTask", result);
     }
 
+    @Override
+    public void setIp_port(String param)
+    {
+        this.ip_port = param;
+    }
 }

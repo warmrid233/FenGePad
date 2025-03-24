@@ -1,10 +1,17 @@
 package com.example.interactice_segment;
 
+import static android.graphics.Color.YELLOW;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.PointF;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -24,6 +31,7 @@ import java.io.IOException;
 
 public class InteractiveActivity extends BaseActivity implements GetImageCallback
 {
+    private String ip_port = null;
     private Bitmap bitmap;
     private DrawingView drawingView;
     private ZoomableImageView imageView;
@@ -33,7 +41,9 @@ public class InteractiveActivity extends BaseActivity implements GetImageCallbac
 
     private int method = 0; //0 - 图片缩放、移动， 1 - 点击， 2 - 连线， 3 - 画笔
     private int is_positive = 1;
-    private int resetImg = 1;
+    private int resetImg = 0;
+
+    private float scale = 1; //bitmap填充后的缩放因子
 
     @Override
     protected int getLayoutId()
@@ -56,10 +66,11 @@ public class InteractiveActivity extends BaseActivity implements GetImageCallbac
 
         frameLayout = findViewById(R.id.frame);
         imageView = findViewById(R.id.img_show);
-        presenter = new InteractivePresenter(this);
         drawingView = findViewById(R.id.drawing_view);
 
         Intent intent = this.getIntent();
+        ip_port = intent.getStringExtra("IpAndPort");
+        presenter = new InteractivePresenter(this, ip_port);
         String imagePath = intent.getStringExtra("imagePath");
         if (imagePath != null)
         {
@@ -67,29 +78,22 @@ public class InteractiveActivity extends BaseActivity implements GetImageCallbac
             if (imgFile.exists())
             {
                 bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                imageView.setImageBitmap(bitmap);
+                imageView.setBitmap(bitmap);
             }
         }
-        // 调整画布与图片大小一致
-        int bitmapWidth = bitmap.getWidth();
-        int bitmapHeight = bitmap.getHeight();
 
-        // 设置 DrawingView 的宽高与 Bitmap 的宽高一致
-        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) drawingView.getLayoutParams();
-        params.width = bitmapWidth;
-        params.height = bitmapHeight;
-        params.gravity = Gravity.CENTER;
-
-        drawingView.setLayoutParams(params);
-
-        // 设置 ZoomableImageView 的宽高与 Bitmap 的宽高一致
-        params = (FrameLayout.LayoutParams) imageView.getLayoutParams();
-        params.width = bitmapWidth;
-        params.height = bitmapHeight;
-        params.gravity = Gravity.CENTER; // 居中显示
-
-        imageView.setLayoutParams(params);
-
+        imageView.post(new Runnable() {
+            @Override
+            public void run() {
+                float bitmapWidth = bitmap.getWidth();
+                float bitmapHeight = bitmap.getHeight();
+                float imageViewWidth = imageView.getWidth();
+                float imageViewHeight = imageView.getHeight();
+                float scale_width = imageViewWidth / bitmapWidth;
+                float scale_height = imageViewHeight / bitmapHeight;
+                scale = Math.min(scale_width, scale_height);
+            }
+        });
         final int RED_CONST = 1;
         final int BLUE_CONST = 2;
 
@@ -99,7 +103,17 @@ public class InteractiveActivity extends BaseActivity implements GetImageCallbac
             public void onClick(View v) {
                 method = 0;
                 drawingView.setMethod(method);
-                if(resetImg == 0) resetImg = 1;
+                btn_moveImg.setBackgroundColor(0xFF3F51B5);
+                btn_interested.setBackgroundColor(0xE9DCFE);
+                btn_uninterested.setBackgroundColor(0xE9DCFE);
+                btn_pen.setBackgroundColor(0xE9DCFE);
+                btn_lines.setBackgroundColor(0xE9DCFE);
+
+                if(resetImg == 0)
+                {
+                    showMessage("调整图片");
+                    resetImg = 1;
+                }
                 else
                 {
                     imageView.reset();
@@ -124,6 +138,13 @@ public class InteractiveActivity extends BaseActivity implements GetImageCallbac
                 method = 1;
                 is_positive = 1;
                 drawingView.setMethod(method);
+                showMessage("兴趣点");
+                btn_moveImg.setBackgroundColor(0xE9DCFE);
+                btn_interested.setBackgroundColor(0xFF3F51B5);
+                btn_uninterested.setBackgroundColor(0xE9DCFE);
+                btn_pen.setBackgroundColor(0xE9DCFE);
+                btn_lines.setBackgroundColor(0xE9DCFE);
+
                 drawingView.setColor(RED_CONST);
             }
         });
@@ -139,7 +160,14 @@ public class InteractiveActivity extends BaseActivity implements GetImageCallbac
                 //点击非兴趣点的实现
                 method = 1;
                 is_positive = 0;
-                drawingView.setMethod(1);
+                drawingView.setMethod(method);
+                showMessage("非兴趣点");
+                btn_moveImg.setBackgroundColor(0xE9DCFE);
+                btn_interested.setBackgroundColor(0xE9DCFE);
+                btn_uninterested.setBackgroundColor(0xFF3F51B5);
+                btn_pen.setBackgroundColor(0xE9DCFE);
+                btn_lines.setBackgroundColor(0xE9DCFE);
+
                 drawingView.setColor(BLUE_CONST);
             }
         });
@@ -151,9 +179,24 @@ public class InteractiveActivity extends BaseActivity implements GetImageCallbac
                 drawingView.clear();
                 frameLayout.bringChildToFront(drawingView);
                 frameLayout.invalidate();
+
+                Bitmap tempBitmap = imageView.getCurrentBitmap();
+                Matrix tempMatrix = imageView.getCurrentMatrix();
+                if(tempBitmap != null)
+                {
+                    drawingView.setBitmap(tempBitmap, tempMatrix);
+                }
+
                 //画笔的实现
                 method = 2;
                 drawingView.setMethod(method);
+                showMessage("连接线");
+                btn_moveImg.setBackgroundColor(0xE9DCFE);
+                btn_interested.setBackgroundColor(0xE9DCFE);
+                btn_uninterested.setBackgroundColor(0xE9DCFE);
+                btn_pen.setBackgroundColor(0xE9DCFE);
+                btn_lines.setBackgroundColor(0xFF3F51B5);
+
                 drawingView.setColor(RED_CONST);
             }
         });
@@ -165,9 +208,24 @@ public class InteractiveActivity extends BaseActivity implements GetImageCallbac
                 drawingView.clear();
                 frameLayout.bringChildToFront(drawingView);
                 frameLayout.invalidate();
+
+                Bitmap tempBitmap = imageView.getCurrentBitmap();
+                Matrix tempMatrix = imageView.getCurrentMatrix();
+                if(tempBitmap != null)
+                {
+                    drawingView.setBitmap(tempBitmap, tempMatrix);
+                }
+
                 //画笔的实现
                 method = 3;
                 drawingView.setMethod(method);
+                showMessage("画笔");
+                btn_moveImg.setBackgroundColor(0xE9DCFE);
+                btn_interested.setBackgroundColor(0xE9DCFE);
+                btn_uninterested.setBackgroundColor(0xE9DCFE);
+                btn_pen.setBackgroundColor(0xFF3F51B5);
+                btn_lines.setBackgroundColor(0xE9DCFE);
+
                 drawingView.setColor(RED_CONST);
             }
         });
@@ -182,10 +240,14 @@ public class InteractiveActivity extends BaseActivity implements GetImageCallbac
                     frameLayout.invalidate();
                 }
                 //撤回上一步的实现
-                drawingView.setMethod(0);
+                //drawingView.setMethod(0);
+                showMessage("撤回一步");
                 drawingView.undo();
-                presenter.undo();
-                presenter.getImage(InteractiveActivity.this);
+                if(method == 1)
+                {
+                    presenter.undo();
+                    presenter.getImage(InteractiveActivity.this);
+                }
             }
         });
 
@@ -196,18 +258,30 @@ public class InteractiveActivity extends BaseActivity implements GetImageCallbac
                 frameLayout.invalidate();
                 
                 resetImg = 0;
-                method = 0;
-                drawingView.setMethod(method);
+                if(method == 1)
+                {
+                    method = 0;
+                    drawingView.setMethod(method);
+                    showMessage("完成此物识别");
 
-                drawingView.clear();
-                presenter.finish();
-                presenter.getImage(InteractiveActivity.this);
+                    drawingView.clear();
+                    presenter.finish();
+                    presenter.getImage(InteractiveActivity.this);
+                }
+                 else if(method != 0)
+                {
+                    //实现绘画痕迹与图像的融合
+                    Bitmap tempBitmap = drawingView.getBitmap();
+                    imageView.setBitmap(tempBitmap);
+                    drawingView.clear();
+                }
             }
         });
 
         btn_exit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showMessage("保存并退出");
                 //将交互的结果返回给showActivity，然后销毁本Activity
                 File file = new File(getCacheDir(), "temp_image.jpg");
                 try (FileOutputStream fos = new FileOutputStream(file)) {
@@ -219,6 +293,7 @@ public class InteractiveActivity extends BaseActivity implements GetImageCallbac
                 Intent intent = new Intent();
                 intent.setClass(InteractiveActivity.this, ShowActivity.class);
                 intent.putExtra("imagePath", file.getAbsolutePath());
+                intent.putExtra("IpAndPort", ip_port);
 
                 startActivity(intent);
                 drawingView.clear();
@@ -237,10 +312,16 @@ public class InteractiveActivity extends BaseActivity implements GetImageCallbac
                         float y = event.getY();
                         // 计算原始图像的坐标
                         PointF originalCoords = imageView.getOriginalImageCoordinates(x, y);
-                        float originalX = originalCoords.x;
-                        float originalY = originalCoords.y;
+                        float originalX = originalCoords.x / scale;
+                        float originalY = originalCoords.y / scale;
                         Log.d("Click Position", "Original X: " + originalX + ", " +
                                 "Original Y: " + originalY);
+                        if (originalX < 0 || originalX > bitmap.getWidth() || originalY < 0 ||
+                            originalY > bitmap.getHeight())
+                        {
+                            showMessage("点击不在图像上，请重试");
+                            return true;
+                        }
 
                         presenter.uploadClick(originalX, originalY, is_positive);
 

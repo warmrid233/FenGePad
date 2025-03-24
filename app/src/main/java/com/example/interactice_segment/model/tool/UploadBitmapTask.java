@@ -11,13 +11,19 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class UploadBitmapTask extends AsyncTask<Bitmap, Void, String>
+public class UploadBitmapTask extends AsyncTask<Bitmap, Void, String> implements BaseTask
 {
+    private String ip_port = null;
+
+    private UploadImgCallback callback;
+
+    public UploadBitmapTask(UploadImgCallback callback) {this.callback = callback;}
+
     @Override
     protected String doInBackground(Bitmap... bitmaps) {
         HttpURLConnection connection = null;
         DataOutputStream outputStream = null;
-        String urlString = "http://10.129.234.121:5000/load_img";  // 替换为你的 Flask 服务器地址
+        String url_s = "http://" + this.ip_port + "/load_img";
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
         try {
@@ -28,7 +34,7 @@ public class UploadBitmapTask extends AsyncTask<Bitmap, Void, String>
             byte[] byteArray = byteArrayOutputStream.toByteArray();
 
             // 打开连接
-            URL url = new URL(urlString);
+            URL url = new URL(url_s);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setDoOutput(true);
@@ -84,7 +90,18 @@ public class UploadBitmapTask extends AsyncTask<Bitmap, Void, String>
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
-        // 简单输出服务器返回的结果
-        Log.d("UploadBitmapTask", result);
+        if(result != null)
+        {
+            callback.onImageUploaded(result);
+        }
+        else
+        {
+            callback.onUploadedFailed();
+        }
+    }
+
+    @Override
+    public void setIp_port(String param) {
+        this.ip_port = param;
     }
 }

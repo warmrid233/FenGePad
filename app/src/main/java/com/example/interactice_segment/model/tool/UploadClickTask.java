@@ -15,7 +15,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
-public class UploadClickTask extends AsyncTask<Float, Void, String> {
+public class UploadClickTask extends AsyncTask<Float, Void, String> implements BaseTask
+{
+    private String ip_port = null;
+
     @Override
     protected String doInBackground(Float... params)
     {
@@ -28,8 +31,9 @@ public class UploadClickTask extends AsyncTask<Float, Void, String> {
             float y = params[1];
             int is_positive = (int)params[2].floatValue();
 
+            String url_s = "http://" + this.ip_port + "/click";
             // 设置Flask服务器的URL
-            URL url = new URL("http://10.129.234.121:5000/click");
+            URL url = new URL(url_s);
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("POST");
             urlConnection.setDoOutput(true);
@@ -88,5 +92,10 @@ public class UploadClickTask extends AsyncTask<Float, Void, String> {
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void setIp_port(String param) {
+        this.ip_port = param;
     }
 }

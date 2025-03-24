@@ -3,36 +3,30 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
 
     <LinearLayout
-        android:id="@+id/top_linearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/frame"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/left_linear"
+        android:layout_width="70dp"
+        android:layout_height="0dp"
+        android:background="#009688"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/frame"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <Button
-            android:id="@+id/top_move_img"
-            style="@style/Widget.Material3.ExtendedFloatingActionButton.Primary"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/top_moveImg"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            app:icon="@drawable/baseline_crop_24"
-            app:strokeColor="@color/black"
-            app:strokeWidth="0.5dp" />
-
-        <Button
             android:id="@+id/top_click_interested"
             style="@style/Widget.Material3.ExtendedFloatingActionButton.Primary"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="#E9DCFE"
             android:text="@string/top_interested"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             app:icon="@drawable/baseline_circle_24"
@@ -42,21 +36,29 @@
         <Button
             android:id="@+id/top_click_uninterested"
             style="@style/Widget.Material3.ExtendedFloatingActionButton.Primary"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/top_uninterested"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="#E9DCFE"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             app:icon="@drawable/baseline_remove_circle_24"
             app:strokeColor="@color/black"
-            app:strokeWidth="0.5dp" />
+            app:strokeWidth="0.5dp"
+            tools:text="@string/top_uninterested" />
 
         <Button
             android:id="@+id/top_line"
             style="@style/Widget.Material3.ExtendedFloatingActionButton.Primary"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="#E9DCFE"
             android:text="@string/top_line"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             app:icon="@drawable/baseline_polyline_24"
@@ -66,9 +68,13 @@
         <Button
             android:id="@+id/top_pen"
             style="@style/Widget.Material3.ExtendedFloatingActionButton.Primary"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="#E9DCFE"
             android:text="@string/top_pen"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             app:icon="@drawable/baseline_pen_24"
@@ -76,11 +82,31 @@
             app:strokeWidth="0.5dp" />
 
         <Button
+            android:id="@+id/top_move_img"
+            style="@style/Widget.Material3.ExtendedFloatingActionButton.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="#E9DCFE"
+            android:text="@string/top_moveImg"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            app:icon="@drawable/baseline_crop_24"
+            app:strokeColor="@color/black"
+            app:strokeWidth="0.5dp" />
+
+        <Button
             android:id="@+id/top_rollback"
             style="@style/Widget.Material3.ExtendedFloatingActionButton.Primary"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="#E9DCFE"
             android:text="@string/top_rollback"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             app:icon="@drawable/baseline_back_24"
@@ -90,9 +116,13 @@
         <Button
             android:id="@+id/top_finish"
             style="@style/Widget.Material3.ExtendedFloatingActionButton.Primary"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="#E9DCFE"
             android:text="@string/top_finish"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             app:icon="@drawable/baseline_check_24"
@@ -102,9 +132,13 @@
         <Button
             android:id="@+id/top_exit"
             style="@style/Widget.Material3.ExtendedFloatingActionButton.Primary"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="#E9DCFE"
             android:text="@string/top_exit"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             app:icon="@drawable/baseline_exit_to_app_24"
@@ -116,11 +150,11 @@
         android:id="@+id/frame"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_margin="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/top_linearLayout">
+        app:layout_constraintStart_toEndOf="@+id/left_linear"
+        app:layout_constraintTop_toTopOf="parent">
 
 
         <com.example.interactice_segment.view.DrawingView
@@ -132,9 +166,10 @@
             android:id="@+id/img_show"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/cardview_dark_background"
             android:contentDescription="@string/img_description"
-            android:src="@drawable/baseline_upload_24"
-            android:background="@color/cardview_dark_background"/>
+            android:scaleType="fitStart"
+            android:src="@drawable/baseline_upload_24" />
 
     </FrameLayout>
 

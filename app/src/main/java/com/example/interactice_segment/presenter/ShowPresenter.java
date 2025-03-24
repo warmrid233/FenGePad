@@ -6,22 +6,25 @@ import android.graphics.Bitmap;
 import com.example.interactice_segment.ShowActivity;
 import com.example.interactice_segment.model.IShowModel;
 import com.example.interactice_segment.model.ShowModel;
+import com.example.interactice_segment.model.tool.UploadImgCallback;
 import com.example.interactice_segment.view.BaseView;
 
 public class ShowPresenter extends BasePresenter implements IShowPresenter
 {
+    private String ip_port = null;
     private final IShowModel model;
 
-    public ShowPresenter(BaseView view)
+    public ShowPresenter(BaseView view, String ip_port)
     {
         super(view);
-        model = new ShowModel();
+        model = new ShowModel(ip_port);
+        this.ip_port = ip_port;
     }
 
     @Override
-    public void uploadImg(Bitmap bitmap)
+    public void uploadImg(Bitmap bitmap, UploadImgCallback callback)
     {
-        model.uploadImage(bitmap);
+        model.uploadImage(bitmap, callback);
     }
 
     @Override

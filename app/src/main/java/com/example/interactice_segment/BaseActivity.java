@@ -12,6 +12,8 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
 {
     private static final int REQUEST_STORAGE_PERMISSION = 1;
 
+    private Toast currentToast = null;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
     {
@@ -36,7 +38,11 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
     @Override
     public void showMessage(String message)
     {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        if (currentToast != null) {
+            currentToast.cancel();
+        }
+        currentToast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
+        currentToast.show();
     }
 
     //    @Override

@@ -7,14 +7,17 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class UndoTask extends AsyncTask<Void, Void, String>
+public class UndoTask extends AsyncTask<Void, Void, String> implements BaseTask
 {
+    private String ip_port = null;
+
     @Override
     protected String doInBackground(Void... voids)
     {
         try {
+            String url_s = "http://" + this.ip_port + "/undo";
             // 创建连接
-            URL url = new URL("http://10.129.234.121:5000/undo");
+            URL url = new URL(url_s);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setDoInput(true);
@@ -43,4 +46,8 @@ public class UndoTask extends AsyncTask<Void, Void, String>
         Log.d("UndoTask", result);
     }
 
+    @Override
+    public void setIp_port(String param) {
+        this.ip_port = param;
+    }
 }

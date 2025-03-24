@@ -9,8 +9,9 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class GetImageTask extends AsyncTask<Void, Void, Bitmap>
+public class GetImageTask extends AsyncTask<Void, Void, Bitmap> implements BaseTask
 {
+    private String ip_port = null;
     private GetImageCallback callback;
 
     // 构造函数传入回调接口
@@ -23,8 +24,9 @@ public class GetImageTask extends AsyncTask<Void, Void, Bitmap>
     protected Bitmap doInBackground(Void... urls) {
         Bitmap bitmap = null;
         try {
+            String url_s = "http://" + this.ip_port + "/get_image";
             // 创建连接
-            URL url = new URL("http://10.129.234.121:5000/get_image");
+            URL url = new URL(url_s);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setDoInput(true);
@@ -42,11 +44,17 @@ public class GetImageTask extends AsyncTask<Void, Void, Bitmap>
 
     @Override
     protected void onPostExecute(Bitmap result) {
+        super.onPostExecute(result);
         if (result != null) {
             // 更新UI
             callback.onImageGot(result);
         } else {
             callback.onGetFailed();
         }
+    }
+
+    @Override
+    public void setIp_port(String param) {
+        ip_port = param;
     }
 }
