@@ -1,6 +1,5 @@
 package com.example.interactice_segment.presenter;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
 
 import com.example.interactice_segment.model.tool.UploadImgCallback;

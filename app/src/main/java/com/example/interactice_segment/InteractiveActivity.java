@@ -78,10 +78,11 @@ public class InteractiveActivity extends BaseActivity implements GetImageCallbac
             if (imgFile.exists())
             {
                 bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                imageView.setBitmap(bitmap);
+                imageView.setImageBitmap(bitmap);
             }
         }
 
+        // 在ImageView被图像填充完毕后计算图像缩放因子scale
         imageView.post(new Runnable() {
             @Override
             public void run() {
@@ -97,7 +98,7 @@ public class InteractiveActivity extends BaseActivity implements GetImageCallbac
         final int RED_CONST = 1;
         final int BLUE_CONST = 2;
 
-
+        // 图像调整按钮与功能
         btn_moveImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -125,6 +126,7 @@ public class InteractiveActivity extends BaseActivity implements GetImageCallbac
             }
         });
 
+        // 兴趣点按钮与功能
         btn_interested.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -149,6 +151,7 @@ public class InteractiveActivity extends BaseActivity implements GetImageCallbac
             }
         });
 
+        // 非兴趣点按钮与功能
         btn_uninterested.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -172,6 +175,7 @@ public class InteractiveActivity extends BaseActivity implements GetImageCallbac
             }
         });
 
+        // 连接线按钮与功能
         btn_lines.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -184,7 +188,7 @@ public class InteractiveActivity extends BaseActivity implements GetImageCallbac
                 Matrix tempMatrix = imageView.getCurrentMatrix();
                 if(tempBitmap != null)
                 {
-                    drawingView.setBitmap(tempBitmap, tempMatrix);
+                    drawingView.setBitmap(tempBitmap, tempMatrix, scale);
                 }
 
                 //画笔的实现
@@ -201,6 +205,7 @@ public class InteractiveActivity extends BaseActivity implements GetImageCallbac
             }
         });
 
+        // 画笔按钮与功能
         btn_pen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -213,7 +218,7 @@ public class InteractiveActivity extends BaseActivity implements GetImageCallbac
                 Matrix tempMatrix = imageView.getCurrentMatrix();
                 if(tempBitmap != null)
                 {
-                    drawingView.setBitmap(tempBitmap, tempMatrix);
+                    drawingView.setBitmap(tempBitmap, tempMatrix, scale);
                 }
 
                 //画笔的实现
@@ -230,6 +235,7 @@ public class InteractiveActivity extends BaseActivity implements GetImageCallbac
             }
         });
 
+        // 撤回按钮与功能
         btn_rollback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -251,6 +257,7 @@ public class InteractiveActivity extends BaseActivity implements GetImageCallbac
             }
         });
 
+        // 完成交互的按钮与功能
         btn_finish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -271,13 +278,23 @@ public class InteractiveActivity extends BaseActivity implements GetImageCallbac
                  else if(method != 0)
                 {
                     //实现绘画痕迹与图像的融合
-                    Bitmap tempBitmap = drawingView.getBitmap();
-                    imageView.setBitmap(tempBitmap);
-                    drawingView.clear();
+                    if(drawingView.getBitmap() != null)
+                    {
+                        bitmap = Bitmap.createScaledBitmap(drawingView.getBitmap(),
+                                bitmap.getWidth(), bitmap.getHeight(), true);
+                        imageView.setImageBitmap(bitmap);
+                        drawingView.clear();
+                        drawingView.resetMatrix();
+
+                        btn_pen.setBackgroundColor(0xE9DCFE);
+                        btn_lines.setBackgroundColor(0xE9DCFE);
+                        method = 0;
+                    }
                 }
             }
         });
 
+        // 退出交互的按钮与功能
         btn_exit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -301,30 +318,29 @@ public class InteractiveActivity extends BaseActivity implements GetImageCallbac
             }
         });
 
+        // 监听drawingView的触摸事件，计算得到图像原始大小下的交互位置坐标
         drawingView.setOnTouchListener(new View.OnTouchListener() {
             @SuppressLint("ClickableViewAccessibility")
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    float x = event.getX();
+                    float y = event.getY();
+                    // 计算原始图像的坐标
+                    PointF originalCoords = imageView.getOriginalImageCoordinates(x, y);
+                    float originalX = originalCoords.x / scale;
+                    float originalY = originalCoords.y / scale;
+                    Log.d("Click Position", "Original X: " + originalX + ", " +
+                            "Original Y: " + originalY);
+                    if (originalX < 0 || originalX > bitmap.getWidth() || originalY < 0 ||
+                            originalY > bitmap.getHeight())
+                    {
+                        showMessage("交互不在图像上，请重试");
+                        return true;
+                    }
                     if(method == 1)
                     {
-                        float x = event.getX();
-                        float y = event.getY();
-                        // 计算原始图像的坐标
-                        PointF originalCoords = imageView.getOriginalImageCoordinates(x, y);
-                        float originalX = originalCoords.x / scale;
-                        float originalY = originalCoords.y / scale;
-                        Log.d("Click Position", "Original X: " + originalX + ", " +
-                                "Original Y: " + originalY);
-                        if (originalX < 0 || originalX > bitmap.getWidth() || originalY < 0 ||
-                            originalY > bitmap.getHeight())
-                        {
-                            showMessage("点击不在图像上，请重试");
-                            return true;
-                        }
-
                         presenter.uploadClick(originalX, originalY, is_positive);
-
                         presenter.getImage(InteractiveActivity.this);
                     }
                 }

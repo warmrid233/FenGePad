@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,7 +16,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.interactice_segment.R;
-import com.example.interactice_segment.presenter.IInteractivePresenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,14 +23,14 @@ import java.util.Stack;
 
 public class DrawingView extends View
 {
-    private Matrix matrix = new Matrix();
+    private Matrix matrix = new Matrix(); // 图像变换矩阵
     private Paint paint;
     private List<float[]> points;
-    private int points_num = 0;
+    private int points_num = 0; // 记录连接线交互中绘制的点的数量，便于撤回操作
     private Path path;
     private Bitmap bitmap;
     private Canvas canvas;
-    private int method;
+    private int method; // 记录当前交互模式: 0 - 图片缩放、移动， 1 - 点击， 2 - 连线， 3 - 画笔
 
 
     // 使用栈来记录每次绘制的路径（撤销）
@@ -49,10 +47,6 @@ public class DrawingView extends View
         super(context, attrs, defStyleAttr);
     }
 
-    public DrawingView(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes)
-    {
-        super(context, attrs, defStyleAttr, defStyleRes);
-    }
 
     public DrawingView(Context context)
     {
@@ -120,13 +114,26 @@ public class DrawingView extends View
         }
     }
 
-    boolean newLine = false;
+    boolean newLine = false; // 用于记录画笔交互是否绘制了新的线条
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event)
     {
         float x = event.getX();
         float y = event.getY();
+
+        // 点击以外的交互重新计算坐标
+        if(method != 1)
+        {
+            Matrix inverseMatrix = new Matrix();
+            matrix.invert(inverseMatrix);  // 获取当前变换的反向矩阵
+            // 创建一个 PointF 对象来保存原始图像的坐标
+            float[] coords = new float[] {x, y};
+            // 将点击的屏幕坐标通过反矩阵转换为原始图像坐标
+            inverseMatrix.mapPoints(coords);
+            x = coords[0];
+            y = coords[1];
+        }
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -163,23 +170,6 @@ public class DrawingView extends View
                 }
                 break;
         }
-//        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-//            if (method != 0) {
-//                canvas.drawCircle(x, y, 5, paint);
-//            }
-//            if (method == 1)
-//            {
-//                saveStateForUndo();
-//            }
-//            else if (method == 2)
-//            {
-//                // 将点击的坐标添加到列表中
-//                points.add(new float[]{x, y});
-//                // 通知视图重绘
-//                invalidate();
-//                return true;
-//            }
-//        }
 
         invalidate();  // 重新绘制视图
         return true;
@@ -252,22 +242,20 @@ public class DrawingView extends View
         return this.bitmap;
     }
 
-    public void setBitmap(Bitmap bitmap, Matrix matrix)
+    public void setBitmap(Bitmap bitmap, Matrix matrix, float scale)
     {
-        // 获取 DrawingView 的尺寸
-        int viewWidth = getWidth();
-        int viewHeight = getHeight();
-
-        // 如果 Bitmap 的尺寸与 DrawingView 的尺寸不匹配，缩放 Bitmap
-        if (bitmap.getWidth() != viewWidth || bitmap.getHeight() != viewHeight) {
-            this.bitmap = Bitmap.createScaledBitmap(bitmap, viewWidth, viewHeight, true);
-        } else {
-            this.bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-        }
+        this.bitmap = Bitmap.createScaledBitmap(bitmap, (int) (bitmap.getWidth() * scale),
+                (int) (bitmap.getHeight() * scale), true);
         this.matrix = new Matrix(matrix);
         this.canvas = new Canvas(this.bitmap);
         invalidate();
     }
+
+    public void resetMatrix()
+    {
+        this.matrix.reset();
+    }
+
 
     public void clear()
     {

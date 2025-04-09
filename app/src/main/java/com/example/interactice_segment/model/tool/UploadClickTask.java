@@ -2,8 +2,6 @@ package com.example.interactice_segment.model.tool;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;

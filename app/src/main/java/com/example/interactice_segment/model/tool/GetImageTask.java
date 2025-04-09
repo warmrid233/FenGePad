@@ -46,7 +46,7 @@ public class GetImageTask extends AsyncTask<Void, Void, Bitmap> implements BaseT
     protected void onPostExecute(Bitmap result) {
         super.onPostExecute(result);
         if (result != null) {
-            // 更新UI
+            // 使用回调更新UI
             callback.onImageGot(result);
         } else {
             callback.onGetFailed();

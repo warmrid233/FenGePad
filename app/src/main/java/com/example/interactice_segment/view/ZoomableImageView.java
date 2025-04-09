@@ -3,7 +3,6 @@ package com.example.interactice_segment.view;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
@@ -20,11 +19,9 @@ public class ZoomableImageView extends androidx.appcompat.widget.AppCompatImageV
 
     private ScaleGestureDetector scaleGestureDetector;
     private GestureDetector gestureDetector; // 用于处理平移
-    private Matrix matrix;
+    private Matrix matrix; // 图像变换矩阵
     private float scaleFactor = 1.f;
     private float[] lastEvent = new float[2]; // 用来记录手指的最后位置
-
-    private DrawingView drawingView;
 
     public ZoomableImageView(Context context) {
         super(context);
@@ -45,7 +42,7 @@ public class ZoomableImageView extends androidx.appcompat.widget.AppCompatImageV
         matrix = new Matrix();
         scaleGestureDetector = new ScaleGestureDetector(context, new ScaleListener());
         gestureDetector = new GestureDetector(context, new GestureListener());
-        drawingView = findViewById(R.id.drawing_view);  // 获取 DrawingView 控件
+        DrawingView drawingView = findViewById(R.id.drawing_view);  // 获取 DrawingView 控件
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -74,8 +71,6 @@ public class ZoomableImageView extends androidx.appcompat.widget.AppCompatImageV
 
             matrix.setScale(scaleFactor, scaleFactor); // 应用缩放变换
 
-            // 处理缩放时同时更新 DrawingView 的大小
-            //adjustDrawingViewSize();
             return true;
         }
     }
@@ -110,6 +105,7 @@ public class ZoomableImageView extends androidx.appcompat.widget.AppCompatImageV
         }
     }
 
+    // 计算点击处在图像原始大小下的位置坐标
     public PointF getOriginalImageCoordinates(float clickX, float clickY) {
         // 获取当前矩阵的反矩阵
         Matrix inverseMatrix = new Matrix();
@@ -125,24 +121,6 @@ public class ZoomableImageView extends androidx.appcompat.widget.AppCompatImageV
         return new PointF(coords[0], coords[1]);
     }
 
-    // 调整 DrawingView 的大小，保持与 Bitmap 的缩放同步
-    private void adjustDrawingViewSize() {
-        int bitmapWidth = getDrawable().getIntrinsicWidth();
-        int bitmapHeight = getDrawable().getIntrinsicHeight();
-
-        // 计算缩放后的宽高
-        int scaledWidth = (int) (bitmapWidth * scaleFactor);
-        int scaledHeight = (int) (bitmapHeight * scaleFactor);
-
-        // 更新 DrawingView 的大小
-        if (drawingView != null) {
-            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) drawingView.getLayoutParams();
-            params.width = scaledWidth;
-            params.height = scaledHeight;
-            drawingView.setLayoutParams(params);
-        }
-    }
-
     public Matrix getCurrentMatrix()
     {
         return new Matrix(matrix);
@@ -153,22 +131,6 @@ public class ZoomableImageView extends androidx.appcompat.widget.AppCompatImageV
         Drawable drawable = getDrawable();
         if (drawable == null) return null;
 
-        // 获取 Drawable 的原始 Bitmap
-//        Bitmap originalBitmap = ((BitmapDrawable) drawable).getBitmap();
-//        // 获取当前矩阵的反矩阵
-//        Matrix inverseMatrix = new Matrix();
-//        matrix.invert(inverseMatrix);  // 获取当前变换的反向矩阵
-//
-//        // 获取当前 View 的宽高
-//        int viewWidth = getWidth();
-//        int viewHeight = getHeight();
-//        // 创建一个新的 Bitmap，用于保存当前显示的内容
-//        Bitmap displayedBitmap = Bitmap.createBitmap(viewWidth, viewHeight, Bitmap.Config.ARGB_8888);
-//        Canvas canvas = new Canvas(displayedBitmap);
-//
-//        // 将原始 Bitmap 绘制到新的 Bitmap 上，应用当前的 Matrix 变换
-//        canvas.drawBitmap(originalBitmap, matrix, null);
-
         return ((BitmapDrawable) drawable).getBitmap();
     }
 
@@ -178,7 +140,6 @@ public class ZoomableImageView extends androidx.appcompat.widget.AppCompatImageV
         // 重置缩放因子和矩阵
         scaleFactor = 1.f;
         matrix.reset(); // 清除所有变换
-        //adjustDrawingViewSize();  // 重置 DrawingView 大小
 
         // 重新应用缩放变换
         matrix.setScale(scaleFactor, scaleFactor);
@@ -186,11 +147,5 @@ public class ZoomableImageView extends androidx.appcompat.widget.AppCompatImageV
         // 重新绘制视图
         invalidate();
 
-    }
-
-    public void setBitmap(Bitmap bitmap)
-    {
-        setImageBitmap(bitmap);
-        this.reset();
     }
 }

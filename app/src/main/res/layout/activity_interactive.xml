@@ -160,7 +160,8 @@
         <com.example.interactice_segment.view.DrawingView
             android:id="@+id/drawing_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:scaleType="fitStart" />
 
         <com.example.interactice_segment.view.ZoomableImageView
             android:id="@+id/img_show"

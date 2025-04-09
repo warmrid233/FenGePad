@@ -1,7 +1,5 @@
 package com.example.interactice_segment.presenter;
 
-import android.graphics.Bitmap;
-
 import com.example.interactice_segment.model.IInteractiveModel;
 import com.example.interactice_segment.model.InteractiveModel;
 import com.example.interactice_segment.model.tool.GetImageCallback;

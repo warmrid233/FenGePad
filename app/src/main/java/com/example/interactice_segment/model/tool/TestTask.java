@@ -16,7 +16,6 @@ import java.net.URL;
 public class TestTask extends AsyncTask<Void, Void, String> implements BaseTask
 {
     private String ip_port = null;
-    private boolean is_connect = false;
 
     private TestCallback callback;
 

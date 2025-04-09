@@ -1,7 +1,6 @@
 package com.example.interactice_segment.model.tool;
 
-import android.graphics.Bitmap;
-
+// TestTask的回调接口
 public interface TestCallback
 {
     void onTestSuccess(String result); // 成功时回调
