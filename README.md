@@ -1,12 +1,12 @@
 # Dune Interactive Segmentation
 
-An interactive segmentation application for dune images combining Python deep learning models (ScribblePrompt) with Android mobile implementation
+An interactive segmentation application for dune images combining Python deep learning models (FenGePad-Model) with Android mobile implementation
 
-We implemented the backend with reference to the ScribblePrompt project. Please pull the backend project before using mine. Project link:
+We implemented the backend with reference to the FenGePad-Model project. Please pull the backend project before using mine. Project link:
 
 https://github.com/nicezheng/FenGePad-Model
 
-Please add or replace the model files used in this project to the original ScribblePrompt project. Relevant link:
+Please add or replace the model files used in this project to the original FenGePad-Model project. Relevant link:
 
 https://github.com/warmrid233/dune_seg_model
 
@@ -30,7 +30,7 @@ An interactive segmentation system for dune geomorphology implemented with Andro
   - Interactive segmentation annotation
   - Result visualization and export
 - 🖥️ Backend Features:
-  - Semantic segmentation based on [ScribblePrompt]
+  - Semantic segmentation based on [FenGePad-Model]
   - Interactive mask optimization
 
 **Tech Stack**:
@@ -95,8 +95,8 @@ Single finger/stylus drag: Draw lines
 
 ## Development Documentation
 **Model Training**:
-- Refer to ScribblePrompt project for model training methods:
-https://github.com/halleewong/ScribblePrompt
+- Refer to FenGePad-Model project for model training methods:
+https://github.com/nicezheng/FenGePad-Model
 
 **API Specification**:
 |Endpoint           |Method           |Parameter Format            |Function               |
