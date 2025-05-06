@@ -2,7 +2,7 @@
 
 基于 Python 深度学习模型（ScribblePrompt）与 Android 移动端的沙丘图像交互式分割应用
 
-本项目使用了SimpleClick开源项目作为模型后端，原项目链接如下：
+本项目使用了ScribblePrompt开源项目作为模型后端，原项目链接如下：
 
 https://github.com/halleewong/ScribblePrompt
 
