@@ -1,17 +1,17 @@
 # Dune Interactive Segmentation
 
-基于 Python 深度学习模型（SimpleClick）与 Android 移动端的沙丘图像交互式分割应用
+基于 Python 深度学习模型（ScribblePrompt）与 Android 移动端的沙丘图像交互式分割应用
 
 本项目使用了SimpleClick开源项目作为模型后端，原项目链接如下：
 
-https://github.com/uncbiag/SimpleClick
+https://github.com/halleewong/ScribblePrompt
 
 请将本项目使用的模型端文件添加或替换到原始的SimpleClick项目中，相关链接如下：
 
 https://github.com/warmrid233/dune_seg_model
 
 ## 演示
-<video controls src="沙丘分割演示.mp4" title="Title"></video>
+<video controls src="demo_video.mp4" title="Title"></video>
 
 ## 目录
 - [项目概述](#项目概述)
@@ -30,7 +30,7 @@ https://github.com/warmrid233/dune_seg_model
   - 交互式分割标注
   - 结果可视化与导出
 - 🖥️ 后端功能：
-  - 基于 [SimpleClick] 的语义分割
+  - 基于 [ScribblePrompt] 的语义分割
   - 交互式掩模优化
 
 **技术栈**：
@@ -72,11 +72,7 @@ pip install -r requirements.txt
 - 在PyCharm中运行，运行/调试配置如下：
 ~~~bash
 script: 
-*/SimpleClick-1.0/interactive_demo/android_demo/android_control.py
-
-脚本形参： 
---checkpoint=./weights/simpleclick_models/dune_seg_model.pth --gpu 0
-~~~
+*\ScribblePrompt-main\demos\android demo\android_controller.py
 
 **Android 应用构建**
 
