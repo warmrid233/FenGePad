@@ -21,7 +21,7 @@
 <!--    <string name="btn_set">确认(请测试成功后点我)</string>-->
 <!--    <string name="btn_test">测试</string>-->
 
-    <string name="app_name">dune segment</string>
+    <string name="app_name">FenGePad</string>
     <string name="upload">upload</string>
     <string name="interactive">Interact</string>
     <string name="download">save</string>
