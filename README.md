@@ -11,7 +11,7 @@ Please add or replace the model files used in this project to the original Scrib
 https://github.com/warmrid233/dune_seg_model
 
 ## Demo
-<video controls src="demo_video.mp4" title="Title"></video>
+<img src="demo_gif.gif" alt="动画演示" width="400" />
 
 ## Contents
 - [Project Overview](#project-overview)
