@@ -31,10 +31,12 @@ public class ShowPresenter extends BasePresenter implements IShowPresenter
     {
         if (view != null && bitmap != null) {
             model.saveBitmapToGallery((ShowActivity) view, bitmap, title);
-            view.showMessage("图片保存成功");
+            //            view.showMessage("图片保存成功");
+            view.showMessage("image saved");
         } else {
             if (view != null) {
-                view.showMessage("图片保存失败");
+             //                view.showMessage("图片保存失败");
+                view.showMessage("image-save failed");
             }
         }
     }
