@@ -47,6 +47,7 @@ An interactive segmentation system for dune geomorphology implemented with Andro
 Install dependencies:
 ```bash
 pip install -r requirements.txt
+```
 
 **Android Client**:
 - Android Studio 2023.3+
@@ -61,6 +62,7 @@ pip install -r requirements.txt
 ```bash
 script:
 *\ScribblePrompt-main\demos\android demo\android_controller.py
+```
 
 **Build Android Application**:
 - Open project in Android Studio
