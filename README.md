@@ -2,9 +2,9 @@
 
 An interactive segmentation application for dune images combining Python deep learning models (ScribblePrompt) with Android mobile implementation
 
-This project uses ScribblePrompt open-source project as the model backend. Please pull the original project before using mine. Original project link:
+We implemented the backend with reference to the ScribblePrompt project. Please pull the backend project before using mine. Project link:
 
-https://github.com/halleewong/ScribblePrompt
+https://github.com/nicezheng/FenGePad-Model
 
 Please add or replace the model files used in this project to the original ScribblePrompt project. Relevant link:
 
@@ -61,7 +61,7 @@ pip install -r requirements.txt
 - Run in PyCharm with following run/debug configuration:
 ```bash
 script:
-*\ScribblePrompt-main\demos\android demo\android_controller.py
+*(your path)\android demo\android_controller.py
 ```
 
 **Build Android Application**:
