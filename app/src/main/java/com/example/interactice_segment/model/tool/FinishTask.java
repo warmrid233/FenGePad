@@ -20,6 +20,8 @@ public class FinishTask extends AsyncTask<Void, Void, String> implements BaseTas
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setDoInput(true);
+            connection.setReadTimeout(5000);
+            connection.setConnectTimeout(5000);
             connection.connect();
 
             // 获取响应

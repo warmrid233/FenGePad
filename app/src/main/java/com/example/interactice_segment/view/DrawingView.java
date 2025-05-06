@@ -59,7 +59,7 @@ public class DrawingView extends View
         ZoomableImageView imageView = findViewById(R.id.img_show);
 
         paint = new Paint();
-        paint.setColor(Color.RED); // 画笔颜色
+        paint.setColor(Color.GREEN); // 画笔颜色
         paint.setAntiAlias(true);
         paint.setStrokeWidth(3); // 设置画笔宽度
         paint.setStyle(Paint.Style.STROKE); // 设置为描边模式
@@ -106,11 +106,11 @@ public class DrawingView extends View
     {
         if(color == 1)
         {
-            paint.setColor(Color.RED);
+            paint.setColor(Color.GREEN);
         }
         else if (color == 2)
         {
-            paint.setColor((Color.BLUE));
+            paint.setColor((Color.RED));
         }
     }
 
@@ -123,7 +123,7 @@ public class DrawingView extends View
         float y = event.getY();
 
         // 点击以外的交互重新计算坐标
-        if(method != 1)
+        if(method != 0)
         {
             Matrix inverseMatrix = new Matrix();
             matrix.invert(inverseMatrix);  // 获取当前变换的反向矩阵
@@ -133,18 +133,22 @@ public class DrawingView extends View
             inverseMatrix.mapPoints(coords);
             x = coords[0];
             y = coords[1];
+            if (x < 0 || x > bitmap.getWidth() || y < 0 || y > bitmap.getHeight())
+            {
+                return true;
+            }
         }
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 if (method == 1)
                 {
-                    canvas.drawCircle(x, y, 2, paint);
+                    canvas.drawCircle(x, y, 5, paint);
                     saveStateForUndo();
                 }
                 else if (method == 2)
                 {
-                    canvas.drawCircle(x, y, 2, paint);
+                    canvas.drawCircle(x, y, 5, paint);
                     // 将点击的坐标添加到列表中
                     points.add(new float[]{x, y});
                 } else if (method == 3)
@@ -218,6 +222,7 @@ public class DrawingView extends View
         if (!undoStack.isEmpty())
         {
             undoStack.pop();  // 弹出栈顶的元素
+            path.rewind();
             if (!undoStack.isEmpty())
             {
                 // 恢复栈顶的Bitmap
@@ -244,10 +249,15 @@ public class DrawingView extends View
 
     public void setBitmap(Bitmap bitmap, Matrix matrix, float scale)
     {
-        this.bitmap = Bitmap.createScaledBitmap(bitmap, (int) (bitmap.getWidth() * scale),
-                (int) (bitmap.getHeight() * scale), true);
+//        this.bitmap = Bitmap.createScaledBitmap(bitmap, (int) (bitmap.getWidth() * scale),
+//                (int) (bitmap.getHeight() * scale), true);
+//        this.bitmap.setWidth((int) (bitmap.getWidth() * scale));
+//        this.bitmap.setHeight((int) (bitmap.getHeight() * scale));
+        this.bitmap = Bitmap.createBitmap((int) (bitmap.getWidth() * scale),
+                (int) (bitmap.getHeight() * scale), Bitmap.Config.ARGB_8888);
         this.matrix = new Matrix(matrix);
         this.canvas = new Canvas(this.bitmap);
+        saveStateForUndo();
         invalidate();
     }
 

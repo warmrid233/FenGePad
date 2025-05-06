@@ -55,6 +55,7 @@
             android:importantForAutofill="no"
             android:inputType="text"
             android:minHeight="48dp"
+            android:text="@string/default_ip"
             android:textColorHint="#A1887F"
             android:textSize="20sp" />
 

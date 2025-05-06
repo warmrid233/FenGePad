@@ -3,11 +3,17 @@ package com.example.interactice_segment.model.tool;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class UndoTask extends AsyncTask<Void, Void, String> implements BaseTask
+public class SwitchLabelTask extends AsyncTask<Void, Void, String> implements BaseTask
 {
     private String ip_port = null;
 
@@ -15,7 +21,7 @@ public class UndoTask extends AsyncTask<Void, Void, String> implements BaseTask
     protected String doInBackground(Void... voids)
     {
         try {
-            String url_s = "http://" + this.ip_port + "/undo";
+            String url_s = "http://" + this.ip_port + "/switch_label";
             // 创建连接
             URL url = new URL(url_s);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -29,23 +35,32 @@ public class UndoTask extends AsyncTask<Void, Void, String> implements BaseTask
             int responseCode = connection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 InputStream inputStream = connection.getInputStream();
-                byte[] response = new byte[inputStream.available()];
-                inputStream.read(response);
-                return new String(response);
+                // 读取响应内容
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+                reader.close();
+                JSONObject jsonResponse = new JSONObject(response.toString());
+                return jsonResponse.getString("message");
             } else {
                 return "Error: " + responseCode;
             }
-        } catch (Exception e) {
-            Log.e("UndoTask", "Error downloading image: " + e.getMessage());
+
+        } catch (IOException e) {
+            Log.e("TestTask", "Error testing", e);
             return "Error: " + e.getMessage();
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
         }
     }
 
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
-        // 简单输出服务器返回的结果
-        Log.d("UndoTask", result);
+        Log.d("SwitchLabelTask", result);
     }
 
     @Override

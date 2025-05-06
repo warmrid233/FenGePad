@@ -1,5 +1,7 @@
 package com.example.interactice_segment.model;
 
+import android.graphics.Bitmap;
+
 import com.example.interactice_segment.model.tool.GetImageCallback;
 
 public interface IInteractiveModel
@@ -11,4 +13,8 @@ public interface IInteractiveModel
     void finish();
 
     void undo();
+
+    void uploadPaint(Bitmap paintBitmap);
+
+    void switch_label();
 }

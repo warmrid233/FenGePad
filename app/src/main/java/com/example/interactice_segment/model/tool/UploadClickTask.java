@@ -12,6 +12,8 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UploadClickTask extends AsyncTask<Float, Void, String> implements BaseTask
 {
@@ -36,12 +38,20 @@ public class UploadClickTask extends AsyncTask<Float, Void, String> implements B
             urlConnection.setRequestMethod("POST");
             urlConnection.setDoOutput(true);
             urlConnection.setRequestProperty("Content-Type", "application/json");
+            urlConnection.setReadTimeout(10000);
+            urlConnection.setConnectTimeout(10000);
 
             // 创建请求体
             JSONObject jsonParam = new JSONObject();
             jsonParam.put("x", x);
             jsonParam.put("y", y);
             jsonParam.put("flag", is_positive);
+
+            List<Float> point_coords = new ArrayList<Float>();
+            point_coords.add(x);
+            point_coords.add(y);
+            jsonParam.put("point_coords",point_coords);
+            jsonParam.put("point_lables", is_positive);
 
             // 发送请求体
             os = urlConnection.getOutputStream();

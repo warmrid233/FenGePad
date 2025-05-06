@@ -30,6 +30,8 @@ public class GetImageTask extends AsyncTask<Void, Void, Bitmap> implements BaseT
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setDoInput(true);
+            connection.setReadTimeout(5000);
+            connection.setConnectTimeout(5000);
             connection.connect();
 
             // 获取输入流并解析成 Bitmap

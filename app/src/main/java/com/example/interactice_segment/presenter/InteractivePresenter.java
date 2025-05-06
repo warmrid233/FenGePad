@@ -1,5 +1,7 @@
 package com.example.interactice_segment.presenter;
 
+import android.graphics.Bitmap;
+
 import com.example.interactice_segment.model.IInteractiveModel;
 import com.example.interactice_segment.model.InteractiveModel;
 import com.example.interactice_segment.model.tool.GetImageCallback;
@@ -37,6 +39,18 @@ public class InteractivePresenter extends BasePresenter implements IInteractiveP
     @Override
     public void undo() {
         model.undo();
+    }
+
+    @Override
+    public void uploadPaintResult(Bitmap paintBitmap)
+    {
+        model.uploadPaint(paintBitmap);
+    }
+
+    @Override
+    public void switch_label()
+    {
+        model.switch_label();
     }
 
 

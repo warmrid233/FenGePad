@@ -4,6 +4,9 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -11,19 +14,15 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class UploadBitmapTask extends AsyncTask<Bitmap, Void, String> implements BaseTask
+public class UploadPaintTask extends AsyncTask<Bitmap, Void, String> implements BaseTask
 {
     private String ip_port = null;
-
-    private UploadImgCallback callback;
-
-    public UploadBitmapTask(UploadImgCallback callback) {this.callback = callback;}
 
     @Override
     protected String doInBackground(Bitmap... bitmaps) {
         HttpURLConnection connection = null;
         DataOutputStream outputStream = null;
-        String url_s = "http://" + this.ip_port + "/load_img";
+        String url_s = "http://" + this.ip_port + "/paint";
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
         try {
@@ -77,7 +76,7 @@ public class UploadBitmapTask extends AsyncTask<Bitmap, Void, String> implements
             }
 
         } catch (IOException e) {
-            Log.e("UploadBitmapTask", "Error uploading bitmap", e);
+            Log.e("UploadPaintTask", "Error uploading paint", e);
             return "Error: " + e.getMessage();
         } finally {
             try {
@@ -89,18 +88,24 @@ public class UploadBitmapTask extends AsyncTask<Bitmap, Void, String> implements
         }
     }
 
-    @Override
-    protected void onPostExecute(String result) {
-        super.onPostExecute(result);
-        if(!result.startsWith("Error"))
-        {
-            callback.onImageUploaded(result);
-        }
-        else
-        {
-            callback.onUploadedFailed();
-        }
-    }
+//    @Override
+//    protected void onPostExecute(String result) {
+//        super.onPostExecute(result);
+//        JSONObject jsonResponse;
+//        try {
+//            jsonResponse = new JSONObject(result);
+//        } catch (JSONException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//        String message;
+//        try {
+//            message = jsonResponse.getString("message");
+//            Log.d("UploadPaintTask", message);
+//        } catch (JSONException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     @Override
     public void setIp_port(String param) {

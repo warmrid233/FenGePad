@@ -11,7 +11,6 @@ import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
-import android.widget.FrameLayout;
 
 import com.example.interactice_segment.R;
 

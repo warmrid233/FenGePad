@@ -101,11 +101,13 @@ public class ShowActivity extends BaseActivity implements ShowView, UploadImgCal
                         startActivity(intent);
                         finish();
                     }
-                    else showMessage("图片还未上传到模型，请稍后再次尝试.");
+//                    else showMessage("图片还未上传到模型，请稍后再次尝试.");
+                    else showMessage("No image uploaded, not available.");
                 }
                 else
                 {
-                    showMessage("当前图像为空，无法交互!");
+//                    showMessage("当前图像为空，无法交互!");
+                    showMessage("No image here, not available.");
                 }
             }
         });
@@ -118,7 +120,8 @@ public class ShowActivity extends BaseActivity implements ShowView, UploadImgCal
                 if (bitmap != null) {
                     presenter.saveBitmap(bitmap, "SavedImage");
                 } else {
-                    showMessage("图像为空");
+//                    showMessage("图像为空");
+                    showMessage("No image here, cannot save.");
                 }
             }
         });
@@ -167,13 +170,15 @@ public class ShowActivity extends BaseActivity implements ShowView, UploadImgCal
         if(!result.startsWith("Error"))
         {
             isUploaded = true;
-            showMessage("图片已成功上传至模型，可以开始交互.");
+//            showMessage("图片已成功上传至模型，可以开始交互.");
+            showMessage("Image uploaded, interaction available.");
         }
     }
 
     @Override
     public void onUploadedFailed()
     {
-        showMessage("图片上传失败");
+//        showMessage("图片上传失败");
+        showMessage("Image uploading failed.");
     }
 }
